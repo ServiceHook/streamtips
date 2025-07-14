@@ -3,8 +3,32 @@
 <head>
   <title>Send Tip</title>
   <link rel="stylesheet" href="style.css">
+  <!DOCTYPE html>
+<html>
+<head>
+  <title>Send Tip</title>
+  <link rel="stylesheet" href="style.css">
+
+  <!-- ✅ Firebase Compat SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h2 id="streamerName">Send Tip</h2>
+    <input type="text" id="tipName" placeholder="Your Name (Optional)">
+    <textarea id="tipMsg" placeholder="Your Message" required></textarea>
+    <input type="number" id="tipAmount" placeholder="Amount (INR)" required>
+    <button onclick="sendTip()">Send Tip</button>
+    <p id="tipStatus"></p>
+  </div>
+
+  <!-- ✅ Load after Firebase SDKs -->
+  <script src="script.js"></script>
+</body>
+</html>
+
 </head>
 <body>
   <div class="container">
