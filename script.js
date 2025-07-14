@@ -1,0 +1,101 @@
+// 🧠 Replace with your Firebase config!
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "your.firebaseapp.com",
+  projectId: "your-id",
+  storageBucket: "your.appspot.com",
+  messagingSenderId: "xxxx",
+  appId: "app-id"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+// AUTH LOGIC
+function login() {
+  const email = document.getElementById("email").value;
+  const pass = document.getElementById("password").value;
+  auth.signInWithEmailAndPassword(email, pass)
+    .then(() => location.href = "dashboard.html")
+    .catch(e => document.getElementById("auth-msg").innerText = e.message);
+}
+
+function signup() {
+  const email = document.getElementById("email").value;
+  const pass = document.getElementById("password").value;
+  auth.createUserWithEmailAndPassword(email, pass)
+    .then(user => {
+      db.collection("streamers").doc(user.user.uid).set({ email: user.user.email });
+      location.href = "dashboard.html";
+    })
+    .catch(e => document.getElementById("auth-msg").innerText = e.message);
+}
+
+function logout() {
+  auth.signOut().then(() => location.href = "index.html");
+}
+
+// DASHBOARD LOGIC
+if (location.pathname.includes("dashboard")) {
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      document.getElementById("userEmail").innerText = user.email;
+      const link = `https://yourdomain.com/tip.html?streamer=${user.uid}`;
+      document.getElementById("tipLink").innerText = link;
+
+      db.collection("tips").where("to", "==", user.uid).orderBy("timestamp", "desc").onSnapshot(snap => {
+        let html = "";
+        snap.forEach(doc => {
+          const data = doc.data();
+          html += `<p><b>${data.name || "Anon"}</b>: ₹${data.amount} – ${data.message}</p>`;
+        });
+        document.getElementById("tipsList").innerHTML = html;
+      });
+    } else location.href = "index.html";
+  });
+}
+
+// TIP LOGIC
+function sendTip() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const to = urlParams.get("streamer");
+  const name = document.getElementById("tipName").value;
+  const message = document.getElementById("tipMsg").value;
+  const amount = parseFloat(document.getElementById("tipAmount").value);
+
+  if (!to || !message || !amount) return alert("Fill all required fields");
+
+  // ✅ Save tip (PayU integration comes later)
+  db.collection("tips").add({
+    to, name, message, amount,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(() => {
+    location.href = "thankyou.html";
+  });
+}
+
+// ALERT.HTML LOGIC
+if (location.pathname.includes("alert")) {
+  const streamer = new URLSearchParams(window.location.search).get("streamer");
+  if (streamer) {
+    db.collection("tips")
+      .where("to", "==", streamer)
+      .orderBy("timestamp", "desc")
+      .limit(1)
+      .onSnapshot(snap => {
+        snap.docChanges().forEach(change => {
+          if (change.type === "added") {
+            const d = change.doc.data();
+            const msg = `New tip from ${d.name || "Anon"}: ${d.message}`;
+            document.getElementById("alertBox").innerText = msg;
+            const u = new SpeechSynthesisUtterance(msg);
+            speechSynthesis.speak(u);
+            setTimeout(() => {
+              document.getElementById("alertBox").innerText = "";
+            }, 8000);
+          }
+        });
+      });
+  }
+}
