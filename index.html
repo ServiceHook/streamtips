@@ -3,6 +3,11 @@
 <head>
   <title>StreamerTips - Login</title>
   <link rel="stylesheet" href="style.css">
+
+  <!-- ✅ Firebase CDN Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js"></script>
 </head>
 <body>
   <div class="container">
@@ -13,6 +18,8 @@
     <button onclick="signup()">Sign Up</button>
     <p id="auth-msg"></p>
   </div>
+
+  <!-- ✅ Your script must come after Firebase -->
   <script src="script.js"></script>
 </body>
 </html>
