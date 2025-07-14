@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Dashboard</title>
+  <title>Send Tip</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
   <div class="container">
-    <h2>Welcome, <span id="userEmail"></span></h2>
-    <button onclick="logout()">Logout</button>
-    <p>Your tip page: <br><span id="tipLink"></span></p>
-    <div id="tipsList"><h3>Recent Tips</h3></div>
+    <h2 id="streamerName">Send Tip</h2>
+    <input type="text" id="tipName" placeholder="Your Name (Optional)">
+    <textarea id="tipMsg" placeholder="Your Message" required></textarea>
+    <input type="number" id="tipAmount" placeholder="Amount (INR)" required>
+    <button onclick="sendTip()">Send Tip</button>
+    <p id="tipStatus"></p>
   </div>
   <script src="script.js"></script>
 </body>
