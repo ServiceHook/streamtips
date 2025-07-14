@@ -76,28 +76,45 @@ if (location.pathname.includes("dashboard")) {
 
 function sendTip() {
   const urlParams = new URLSearchParams(window.location.search);
-  const to = urlParams.get("streamer");
+  const streamerId = urlParams.get("streamer");
   const name = document.getElementById("tipName").value || "Anonymous";
   const message = document.getElementById("tipMsg").value;
   const amount = parseFloat(document.getElementById("tipAmount").value);
+  const email = `${Date.now()}@tip.jachu.xyz`; // Dummy email to make PayU happy
 
-  if (!to || !message || !amount) {
-    return alert("Please fill all required fields");
+  if (!streamerId || !amount || !message) {
+    alert("Please fill all fields");
+    return;
   }
 
-  db.collection("tips").add({
-    to,
-    name,
-    message,
-    amount,
-    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-  }).then(() => {
-    location.href = "thankyou.html";
-  }).catch(err => {
-    console.error("Error saving tip:", err);
-    alert("Failed to send tip. Try again.");
+  // POST to serverless function
+  fetch("/api/create-payment", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      streamerId,
+      name,
+      email,
+      amount,
+      message
+    })
+  })
+  .then(res => res.text())
+  .then(html => {
+    // Create and submit form from returned HTML
+    const win = window.open("", "_self");
+    win.document.open();
+    win.document.write(html);
+    win.document.close();
+  })
+  .catch(err => {
+    console.error("Payment init failed:", err);
+    alert("Something went wrong. Try again.");
   });
 }
+
 
 
 // ==================== OBS ALERT ====================
