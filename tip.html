@@ -1,41 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Send Tip</title>
-  <script src="https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js"></script>
+  <title>Dashboard</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
   <div class="container">
-    <h2 id="streamerName">Sending Tip...</h2>
-    <input type="text" id="tipName" placeholder="Your Name (Optional)">
-    <textarea id="tipMsg" placeholder="Your Message" required></textarea>
-    <input type="number" id="tipAmount" placeholder="Amount (INR)" required>
-    <button onclick="sendTip()">Send Tip</button>
-    <p id="tipStatus"></p>
+    <h2>Welcome, <span id="userEmail"></span></h2>
+    <button onclick="logout()">Logout</button>
+    <p>Your tip page: <br><span id="tipLink"></span></p>
+    <div id="tipsList"><h3>Recent Tips</h3></div>
   </div>
-
-  <script>
-    async function sendTip() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const streamerId = urlParams.get("streamer");
-
-  const name = document.getElementById("tipName").value;
-  const message = document.getElementById("tipMsg").value;
-  const amount = document.getElementById("tipAmount").value;
-
-  const res = await fetch('/api/create-payment', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({ streamerId, name, message, amount, email: `${streamerId}@dummy.com` })
-  });
-
-  const html = await res.text();
-  document.write(html);
-}
-  </script>
   <script src="script.js"></script>
 </body>
 </html>
