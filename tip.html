@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Send Tip</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h2 id="streamerName">Sending Tip...</h2>
+    <input type="text" id="tipName" placeholder="Your Name (Optional)">
+    <textarea id="tipMsg" placeholder="Your Message" required></textarea>
+    <input type="number" id="tipAmount" placeholder="Amount (INR)" required>
+    <button onclick="sendTip()">Send Tip</button>
+    <p id="tipStatus"></p>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
