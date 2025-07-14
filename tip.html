@@ -13,6 +13,26 @@
     <button onclick="sendTip()">Send Tip</button>
     <p id="tipStatus"></p>
   </div>
+
+  <script>
+    async function sendTip() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const streamerId = urlParams.get("streamer");
+
+  const name = document.getElementById("tipName").value;
+  const message = document.getElementById("tipMsg").value;
+  const amount = document.getElementById("tipAmount").value;
+
+  const res = await fetch('/api/create-payment', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ streamerId, name, message, amount, email: `${streamerId}@dummy.com` })
+  });
+
+  const html = await res.text();
+  document.write(html);
+}
+  </script>
   <script src="script.js"></script>
 </body>
 </html>
