@@ -1,5 +1,3 @@
-// 🧠 Replace with your Firebase config!
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyAhm4FifzdhSgK5FurC_C6_JvWWJTHa568",
   authDomain: "streamertips-2091f.firebaseapp.com",
@@ -14,7 +12,6 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// AUTH LOGIC
 function login() {
   const email = document.getElementById("email").value;
   const pass = document.getElementById("password").value;
@@ -38,7 +35,7 @@ function logout() {
   auth.signOut().then(() => location.href = "index.html");
 }
 
-// DASHBOARD LOGIC
+// Dashboard logic
 if (location.pathname.includes("dashboard")) {
   auth.onAuthStateChanged(user => {
     if (user) {
@@ -58,7 +55,7 @@ if (location.pathname.includes("dashboard")) {
   });
 }
 
-// TIP LOGIC
+// Tip logic
 function sendTip() {
   const urlParams = new URLSearchParams(window.location.search);
   const to = urlParams.get("streamer");
@@ -68,7 +65,6 @@ function sendTip() {
 
   if (!to || !message || !amount) return alert("Fill all required fields");
 
-  // ✅ Save tip (PayU integration comes later)
   db.collection("tips").add({
     to, name, message, amount,
     timestamp: firebase.firestore.FieldValue.serverTimestamp()
@@ -77,7 +73,7 @@ function sendTip() {
   });
 }
 
-// ALERT.HTML LOGIC
+// OBS Alert logic
 if (location.pathname.includes("alert")) {
   const streamer = new URLSearchParams(window.location.search).get("streamer");
   if (streamer) {
