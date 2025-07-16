@@ -3,8 +3,12 @@ export default async function handler(req, res) {
 
   const { name, email, amount, message, streamerId } = req.body;
 
+  if (!name || !email || !amount || !message || !streamerId) {
+    return res.status(400).send("Missing required fields");
+  }
+
   const orderId = `TIP-${Date.now()}`;
-  const returnUrl = `https://streamertips.vercel.app/api/payment-success?streamer=${streamerId}&name=${encodeURIComponent(name)}&message=${encodeURIComponent(message)}&amount=${amount}`;
+  const returnUrl = `https://streamtips-sandy.vercel.app/api/payment-success?streamer=${streamerId}&name=${encodeURIComponent(name)}&message=${encodeURIComponent(message)}&amount=${amount}`;
 
   try {
     const cfRes = await fetch("https://sandbox.cashfree.com/pg/orders", {
@@ -20,9 +24,9 @@ export default async function handler(req, res) {
         order_amount: parseFloat(amount),
         order_currency: "INR",
         customer_details: {
-          customer_id: `${Date.now()}`,
+          customer_id: `cust-${Date.now()}`,
           customer_name: name,
-          customer_email: email || "demo@cashfree.com"
+          customer_email: email
         },
         order_meta: {
           return_url: returnUrl
@@ -31,10 +35,12 @@ export default async function handler(req, res) {
     });
 
     const data = await cfRes.json();
+    console.log("Cashfree Response:", data);
 
-    if (!data.payment_link) throw new Error("Cashfree order creation failed.");
+    if (!data.payment_link) {
+      return res.status(500).send("Failed to get payment link from Cashfree.");
+    }
 
-    // Redirect to Cashfree Payment Page
     res.writeHead(302, { Location: data.payment_link });
     res.end();
   } catch (err) {
