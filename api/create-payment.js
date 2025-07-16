@@ -1,3 +1,5 @@
+import fetch from 'node-fetch'; // ✅ Important for Vercel!
+
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).end("Method Not Allowed");
 
@@ -24,12 +26,11 @@ export default async function handler(req, res) {
         order_amount: parseFloat(amount),
         order_currency: "INR",
         customer_details: {
-  customer_id: `cust-${Date.now()}`,
-  customer_name: name,
-  customer_email: email,
-  customer_phone: "9999999999" // fake number for sandbox
-}
-
+          customer_id: `cust-${Date.now()}`,
+          customer_name: name,
+          customer_email: email,
+          customer_phone: "9999999999"
+        },
         order_meta: {
           return_url: returnUrl
         }
@@ -53,7 +54,6 @@ export default async function handler(req, res) {
         .send("❌ No payment link returned. Cashfree says: " + (data.message || "Unknown error"));
     }
 
-    // ✅ Redirect to Cashfree payment page
     res.writeHead(302, { Location: data.payment_link });
     res.end();
   } catch (err) {
