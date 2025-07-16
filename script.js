@@ -111,7 +111,7 @@ fetch("/api/create-payment", {
   console.error("Error:", err);
 });
 
-
+}                    
 
 
 // ==================== OBS ALERT ====================
