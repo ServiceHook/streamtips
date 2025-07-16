@@ -88,32 +88,29 @@ function sendTip() {
   }
 
   // POST to serverless function
-  fetch("/api/create-payment", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      streamerId,
-      name,
-      email,
-      amount,
-      message
-    })
+fetch("/api/create-payment", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    streamerId,
+    name,
+    email,
+    amount,
+    message
   })
-  .then(res => res.text())
-  .then(html => {
-    // Create and submit form from returned HTML
-    const win = window.open("", "_self");
-    win.document.open();
-    win.document.write(html);
-    win.document.close();
-  })
-  .catch(err => {
-    console.error("Payment init failed:", err);
-    alert("Something went wrong. Try again.");
-  });
-}
+})
+.then(res => {
+  if (res.redirected) {
+    window.location.href = res.url;
+  } else {
+    return res.text().then(err => { throw new Error(err); });
+  }
+})
+.catch(err => {
+  alert("Payment error. Try again.");
+  console.error("Error:", err);
+});
+
 
 
 
