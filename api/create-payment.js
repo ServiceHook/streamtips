@@ -24,10 +24,12 @@ export default async function handler(req, res) {
         order_amount: parseFloat(amount),
         order_currency: "INR",
         customer_details: {
-          customer_id: `cust-${Date.now()}`,
-          customer_name: name,
-          customer_email: email
-        },
+  customer_id: `cust-${Date.now()}`,
+  customer_name: name,
+  customer_email: email,
+  customer_phone: "9999999999" // fake number for sandbox
+}
+
         order_meta: {
           return_url: returnUrl
         }
