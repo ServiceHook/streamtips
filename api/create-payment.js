@@ -34,17 +34,28 @@ export default async function handler(req, res) {
       })
     });
 
-    const data = await cfRes.json();
-    console.log("Cashfree Response:", data);
-
-    if (!data.payment_link) {
-      return res.status(500).send("Failed to get payment link from Cashfree.");
+    let data;
+    try {
+      data = await cfRes.json();
+    } catch (jsonErr) {
+      const raw = await cfRes.text();
+      console.error("❌ Failed to parse Cashfree response:", raw);
+      return res.status(500).send("Cashfree response was not valid JSON.");
     }
 
+    console.log("💥 Cashfree Response:", data);
+
+    if (!data.payment_link) {
+      return res
+        .status(500)
+        .send("❌ No payment link returned. Cashfree says: " + (data.message || "Unknown error"));
+    }
+
+    // ✅ Redirect to Cashfree payment page
     res.writeHead(302, { Location: data.payment_link });
     res.end();
   } catch (err) {
-    console.error("Cashfree error:", err);
+    console.error("❌ Cashfree order error:", err);
     res.status(500).send("Payment gateway error");
   }
 }
