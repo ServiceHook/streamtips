@@ -1,6 +1,6 @@
-import fetch from 'node-fetch'; // ✅ Important for Vercel!
+const fetch = require("node-fetch");
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).end("Method Not Allowed");
 
   const { name, email, amount, message, streamerId } = req.body;
@@ -60,4 +60,4 @@ export default async function handler(req, res) {
     console.error("❌ Cashfree order error:", err);
     res.status(500).send("Payment gateway error");
   }
-}
+};
